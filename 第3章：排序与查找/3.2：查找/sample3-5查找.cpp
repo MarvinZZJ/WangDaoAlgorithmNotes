@@ -6,6 +6,7 @@ http://t.cn/E9g8aaR
 #include <iostream>
 #include <cstdio>
 #include <algorithm>
+#include <unordered_map>
 
 using namespace std;
 
@@ -37,14 +38,18 @@ bool BinarySearch(int n, int target){
     return false;
 }
 
+//法四：系统自带的散列函数
+unordered_map<int , bool> hashTable;
+
 int main()
 {
     int n, m;
     while(scanf("%d", &n) != EOF){
         for(int i = 0; i < n; i++){
             scanf("%d", &arr[i]);
+            hashTable[arr[i]] = true;  // 法四
         }
-        /*
+        
         // 法一：
         scanf("%d", &m);
         for(int i = 0; i < m; i++){
@@ -56,9 +61,9 @@ int main()
                 printf("NO\n");
             }
         }
-        */
+        
 
-        /*
+        
         // 法二：
         sort(arr, arr + n);
         scanf("%d", &m);
@@ -71,8 +76,9 @@ int main()
                 printf("NO\n");
             }
         }
-        */
+        
 
+        
         // 法三：利用系统自带的二分查找
         // lower_bound:返回≥目标值得第一个位置的地址（不是下标！）
         // upper_bound:返回＞目标值的第一个位置的地址（不是下标！）
@@ -83,6 +89,19 @@ int main()
             scanf("%d", &target);
             int position = lower_bound(arr, arr + n, target) - arr;
             if(position != n && arr[position] == target){
+                printf("YES\n");
+            }else{
+                printf("NO\n");
+            }
+        }
+        
+
+        // 法四：
+        scanf("%d", &m);
+        for(int i = 0; i < m; i++){
+            int target;
+            scanf("%d", &target);
+            if(hashTable[target]){
                 printf("YES\n");
             }else{
                 printf("NO\n");
