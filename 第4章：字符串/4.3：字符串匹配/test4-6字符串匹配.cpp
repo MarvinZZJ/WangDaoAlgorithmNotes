@@ -1,4 +1,4 @@
-*
+/*
 习题4.6	字符串匹配（北京航空航天大学复试上机题）	
 https://www.nowcoder.com/questionTerminal/f7a070bc72e644d68d28fdacc9cc6792
 */
