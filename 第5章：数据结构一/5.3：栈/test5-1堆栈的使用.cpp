@@ -59,10 +59,10 @@ using namespace std;
 int main(){
     int n;
     while(scanf("%d", &n)){
+        cin.ignore(1024, '\n');
         if(n == 0){
             break;
         }
-        cin.ignore();
         stack<int> sta;
         for(int i = 0; i < n; i++){
             char c;
@@ -83,7 +83,7 @@ int main(){
                 scanf("%d", &num);
                 sta.push(num);
             }
-            cin.ignore();
+            cin.ignore(1024, '\n');
         }
         printf("\n");
     }
