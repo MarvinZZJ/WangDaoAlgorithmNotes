@@ -1,0 +1,243 @@
+#include <iostream>
+#include <cstdio>
+#include <cstring>
+
+using namespace std;
+
+const int MAXN = 1e4;
+class BigInteger{
+    
+public:
+    int digit[MAXN];
+    int length;
+    // 构造函数
+    BigInteger();
+    BigInteger(int x);
+    BigInteger(string str);
+    // 复制构造函数
+    BigInteger(const BigInteger& b);
+    // 重写运算符
+    BigInteger operator=(int x);
+    BigInteger operator=(string str);
+    BigInteger operator=(const BigInteger& b);
+    
+    bool operator<=(const BigInteger& b);
+    bool operator==(const BigInteger& b);
+    
+    BigInteger operator+(const BigInteger& b);
+    BigInteger operator-(const BigInteger& b);
+    BigInteger operator*(const BigInteger& b);
+    BigInteger operator/(const BigInteger& b);
+    BigInteger operator%(const BigInteger& b);
+    
+    friend istream& operator>>(istream& in, BigInteger& x);
+    friend ostream& operator<<(ostream& out, const BigInteger& x);
+}
+
+istream& operator>>(istream& in, BigInteger& x){
+    string str;
+    in >> str;
+    x = str;
+    return in;
+}
+
+ostream& operator<<(ostream& out, const BigInteger& x){
+    for(int i = x.length - 1; i >= 0; i--){
+        out << x.digit[i];
+    }
+    return out;
+}
+
+BigInteger::BigInteger(){
+    memset(digit, 0, sizeof(digit));
+    length = 0;
+}
+
+BigInteger::BigInteger(int x){
+    memset(digit, 0, sizeof(digit));
+    length = 0;
+    if(x == 0){
+        length = 1;
+    }
+    while(x != 0){
+        digit[length++] = x % 10;
+        x /= 10;
+    }
+}
+
+BigInteger::BigInteger(string str){
+    memset(digit, 0, sizeof(digit));
+    length = 0;
+    for(int i = str.size() - 1; i >= 0; i--){
+        digit[length++] = str[i] - '0';
+    }
+}
+
+BigInteger::BigInteger(const BigInteger& b){
+    memset(digit, 0, sizeof(digit));
+    length = b.length;
+    for(int i = 0; i < length; i++){
+        digit[i] = b.digit[i];
+    }
+}
+
+BigInteger BigInteger::operator=(int x){
+    memset(digit, 0, sizeof(digit));
+    length = 0;
+    if(x == 0){
+        length++;
+    }
+    while(x != 0){
+        digit[length++] = x % 10;
+        x /= 10;
+    }
+    return *this;
+}
+
+BigInteger BigInteger::operator=(string str){
+    memset(digit, 0, sizeof(digit));
+    length = 0;
+    for(int i = str.size() - 1; i >= 0; i--){
+        digit[length++] = str[i] - '0';
+    }
+    return *this;
+}
+
+BigInteger BigInteger::operator=(const BigInteger& b){
+    memset(digit, 0, sizeof(digit));
+    length = b.length;
+    for(int i = 0; i < length; i++){
+        digit[i] = b.digit[i];
+    }
+    return *this;
+}
+
+bool BigInteger::operator<=(const BigInteger& b){
+    if(length < b.length){
+        return true;
+    }
+    else if(length > b.length){
+        return false;
+    }
+    else{
+        for(int i = length - 1; i >= 0; i--){
+            if(digit[i] == b.digit[i]){
+                continue;
+            }
+            else{
+                return digit[i] < b.digit[i];
+            }
+        }
+        return true;
+    }
+}
+
+bool BigInteger::operator==(const BigInteger& b){
+    if(length != b.length){
+        return false;
+    }
+    else{
+        for(int i = length - 1; i>= 0; i--){
+            if(digit[i] == b.digit[i]){
+                continue;
+            }
+            else{
+                return false;
+            }
+        }
+        return true;
+    }
+}
+
+BigInteger BigInteger::operator+(const BigInteger& b){
+    BigInteger answer;
+    int carry = 0;
+    for(int i = 0; i < length || i < b.length; i++){
+        int current = carry + digit[i] + b.digit[i];
+        answer.digit[answer.length++] = current % 10;
+        carry = current / 10;
+    }
+    if(carry != 0){
+        answer.digit[length++] = carry;
+    }
+    return answer;
+}
+
+BigInteger BigInteger::operator-(const BigInteger& b){
+    BigInteger answer;
+    int carry = 0;
+    for(int i = 0; i < length; i++){
+        int current = digit[i] - b.digit[i] - carry;
+        if(current < 0){
+            current += 10;
+            carry = 1;
+        }else{
+            carry = 0;
+        }
+        answer.digit[answer.length++] = current;
+    }
+    while(answer.digit[answer.length - 1] == 0 && answer.length > 1){
+        answer.length--;
+    }
+    return answer;
+}
+
+BigInteger BigInteger::operator*(const BigInteger& b){
+    BigInteger answer;
+    answer.length = length + b.length;
+    for(int i = 0; i < length; i++){
+        for(int j = 0; j < b.length; j++){
+            answer.digit[i + j] += (digit[i] * b.digit[j]);
+        }
+    }
+    for(int i = 0; i < answer.length; i++){
+        answer.digit[i + 1] += (answer.digit[i] / 10);
+        answer.digit[i] %= 10;
+    }
+    while(answer.length > 1 && answer.digit[answer.length - 1] == 0){
+        answer.length--;
+    }
+    return answer;
+}
+
+BigInteger BigInteger::operator/(const BigInteger& b){
+    BigInteger answer;
+    answer.length = length;
+    BigInteger remainder = 0;  // 存储余数
+    BigInteger temp = b;
+    for(int i = length - 1; i >= 0; i--){
+        if(!(remainder.digit[0] == 0 && remainder.length == 1)){
+            for(int j = remainder.length - 1; j >= 0; j--){
+                remainder.digit[j + 1] = remainder.digit[j];
+            }
+            remainder.length++;
+        }
+        remainder.digit[0] = digit[i];
+        while(temp <= remainder){
+            remainder = remainder - temp;
+            answer.digit[i]++;
+        }
+    }
+    while(answer.length > 1 && answer.digit[answer.length - 1] == 0){
+        answer.length--;
+    }
+    return answer;
+}
+
+BigInteger BigInteger::operator%(const BigInteger& b){
+    BigInteger remainder = 0;
+    BigInteger temp = b;
+    for(int i = length - 1; i >= 0; i--){
+        if(!(remainder.length == 1 && remainder.digit[0] == 0)){
+            for(int j = remainder.length - 1; j >= 0; j--){
+                remainder.digit[j + 1] = remainder.digit[j];
+            }
+            remainder.length++;
+        }
+        remainder.digit[0] = digit[i];
+        while(temp <= remainder){
+            remainder = remainder - temp;
+        }
+    }
+    return remainder;
+}
