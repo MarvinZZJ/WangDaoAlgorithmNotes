@@ -6,7 +6,6 @@ http://t.cn/Ai0u0GUz
 // 解法一：
 #include <iostream>
 #include <cstdio>
-#include <cstring>
 
 using namespace std;
 
@@ -14,20 +13,16 @@ const int MAXN = 20 + 5;
 
 int goods[MAXN];
 
-bool visit[MAXN];
-
 void DFS(int index, int sum, int n, int& answer){
     if(sum == 40){
         answer++;
         return;
     }
     for(int i = index; i < n; i++){
-        if(visit[i] || sum + goods[i] > 40){
+        if(sum + goods[i] > 40){
             continue;
         }
-        visit[i] = true;
         DFS(i + 1, sum + goods[i], n, answer);
-        visit[i] = false;
     }
     return;
 }
@@ -38,7 +33,6 @@ int main(){
         for(int i = 0; i < n; i++){
             scanf("%d", &goods[i]);
         }
-        memset(visit, false, sizeof(visit));
         int answer = 0;
         DFS(0, 0, n, answer);
         cout << answer << endl;
