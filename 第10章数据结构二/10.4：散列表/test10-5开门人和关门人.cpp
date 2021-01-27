@@ -3,6 +3,8 @@
 http://t.cn/AiCuM09f
 */
 
+
+//  方法一：
 #include <iostream>
 #include <cstdio>
 #include <map>
@@ -31,6 +33,33 @@ int main(){
         map<string, string>::iterator it = inTimes.begin();
         cout << it->second << " ";
         it = (--outTimes.end());
+        cout << it->second << endl;
+    }
+    return 0;
+}
+
+
+// 方法二：
+#include <iostream>
+#include <cstdio>
+#include <map>
+
+using namespace std;
+
+int main(){
+    int n;
+    while(cin >> n){
+        cin.ignore(1024, '\n');
+        map<string, string> inTime, outTime;
+        while(n--){
+            string id, in, out;
+            cin >> id >> in >> out;
+            inTime[in] = id;
+            outTime[out] = id;
+        }
+        map<string, string>::iterator it = inTime.begin();
+        cout << it->second << " ";
+        it = --outTime.end();
         cout << it->second << endl;
     }
     return 0;
