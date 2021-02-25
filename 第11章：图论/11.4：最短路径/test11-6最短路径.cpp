@@ -1,6 +1,6 @@
 /*
 习题11.6	最短路径（上海交通大学复试上机题）	
-http://t.cn/AilPCAuL
+http://t.cn/AilPKHTx
 */
 
 // 方法一（不推荐）：利用结构体BigInteger存储路径长度
